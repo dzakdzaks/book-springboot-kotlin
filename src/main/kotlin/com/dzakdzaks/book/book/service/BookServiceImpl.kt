@@ -27,7 +27,7 @@ class BookServiceImpl: BookService {
         return bookRepository.updateBook(id, book)
     }
 
-    override fun deleteBook(id: String): Pair<Boolean, String> {
+    override fun deleteBook(id: String): Pair<Book?, String> {
         return bookRepository.deleteBook(id)
     }
 }

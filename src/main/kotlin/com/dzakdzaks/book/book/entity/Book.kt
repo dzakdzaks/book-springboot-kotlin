@@ -7,7 +7,7 @@ import java.util.*
 data class Book(
     @BsonId
     var id: String = newId<Book>().toString(),
-    var content: String,
+    var title: String,
     var createdDate: Date = Date(),
     var updatedDate: Date = Date()
 

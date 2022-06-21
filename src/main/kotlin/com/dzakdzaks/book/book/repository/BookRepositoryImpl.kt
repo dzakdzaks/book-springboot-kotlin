@@ -20,7 +20,11 @@ class BookRepositoryImpl : BookRepository {
 
     override fun getBookById(id: String): Pair<Book?, String> {
         return try {
-            bookCollection.findOneById(id) to ""
+            bookCollection.findOneById(id)?.let {
+                it to ""
+            } ?: kotlin.run {
+                null to "Book Not Found"
+            }
         } catch (e: Exception) {
             null to e.localizedMessage
         }
@@ -49,12 +53,12 @@ class BookRepositoryImpl : BookRepository {
 
     override fun updateBook(id: String, book: Book): Pair<Book?, String> {
         return try {
-            val result = bookCollection.findOneAndUpdate(
+            val update = bookCollection.updateOne(
                 Book::id eq id,
-                set(Book::content setTo book.content, Book::updatedDate setTo Date())
+                set(Book::title setTo book.title, Book::updatedDate setTo Date())
             )
-            if (result != null) {
-                result to ""
+            if (update.wasAcknowledged()) {
+                getBookById(id)
             } else {
                 null to "Book Not Found"
             }
@@ -64,16 +68,16 @@ class BookRepositoryImpl : BookRepository {
 
     }
 
-    override fun deleteBook(id: String): Pair<Boolean, String> {
+    override fun deleteBook(id: String): Pair<Book?, String> {
         return try {
             val result = bookCollection.findOneAndDelete(Book::id eq id)
             if (result != null) {
-                true to ""
+                result to ""
             } else {
-                false to "Book Not Found"
+                null to "Book Not Found"
             }
         } catch (e: Exception) {
-            false to e.localizedMessage
+            null to e.localizedMessage
         }
     }
 }

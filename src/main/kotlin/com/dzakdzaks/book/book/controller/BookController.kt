@@ -90,10 +90,10 @@ class BookController {
         @PathVariable(name = "id") id: String
     ): BaseResponse<String> {
         val result = bookService.deleteBook(id = id)
-        return if (result.first && result.second.isEmpty()) {
+        return if (result.first != null && result.second.isEmpty()) {
             BaseResponse(
                 status = HttpStatus.OK.value(),
-                message = "Delete Book Success",
+                message = "${result.first?.title} Deleted",
                 data = null
             )
         } else {
